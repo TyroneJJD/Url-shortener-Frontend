@@ -8,6 +8,7 @@ import { LoginForm, RegisterForm, UserDashboard } from '@/features/auth/componen
 import { useAuth } from '@/hooks/useAuth';
 import { api } from '@/utils/api';
 import { getOrCreateGuestUUID, setLogoutFlag, clearLogoutFlag, hasLoggedOut } from '@/utils/guestSession';
+import { API_BASE_URL_EXPORT } from '@/utils/api';
 
 function HomeContent() {
   const [isLogin, setIsLogin] = useState(true);
@@ -62,7 +63,7 @@ function HomeContent() {
       // Clear the return URL from browser URL
       router.replace('/');
       // Redirect to the backend with the short code immediately
-      window.location.href = `http://localhost:8000/${urlToRedirect}`;
+      window.location.href = `${API_BASE_URL_EXPORT}/${urlToRedirect}`;
       return; // Don't set user state, just redirect
     }
 

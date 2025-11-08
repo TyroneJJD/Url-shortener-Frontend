@@ -1,4 +1,4 @@
-const API_BASE_URL = 'http://localhost:8000';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000';
 
 interface FetchOptions extends RequestInit {
     headers?: Record<string, string>;
@@ -99,3 +99,5 @@ export const api = {
             method: 'DELETE',
         }),
 };
+
+export const API_BASE_URL_EXPORT = API_BASE_URL;
