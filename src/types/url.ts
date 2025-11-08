@@ -6,6 +6,7 @@ export interface URLResponse {
     is_active: boolean;
     created_at: string;
     user_id: number;
+    expires_at: string | null; // Fecha de expiración (solo para guest users)
 }
 
 export interface URLCreate {

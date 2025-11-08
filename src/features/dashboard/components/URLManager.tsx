@@ -1,15 +1,22 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Plus } from 'lucide-react';
+import { Plus, Link2, Sparkles } from 'lucide-react';
 import { api } from '@/utils/api';
 import type { URLResponse, URLCreate, URLUpdate } from '@/types/url';
+import type { UserResponse } from '@/types/user';
 import { URLTable } from './URLTable';
 import { URLModal } from './URLModal';
+import { GuestLimitBanner } from './GuestLimitBanner';
 import { useAlertDialog } from '@/hooks/useAlertDialog';
 import { CustomAlertDialog } from '@/components/CustomAlertDialog';
 
-export function URLManager() {
+interface URLManagerProps {
+    user: UserResponse;
+    onUpgradeClick: () => void;
+}
+
+export function URLManager({ user, onUpgradeClick }: URLManagerProps) {
     const [urls, setUrls] = useState<URLResponse[]>([]);
     const [loading, setLoading] = useState(true);
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -66,23 +73,49 @@ export function URLManager() {
 
     return (
         <div className="w-full">
-            <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold text-gray-800">Mis URLs</h2>
-                <button
-                    onClick={handleCreate}
-                    className="inline-flex items-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors font-semibold"
-                >
-                    <Plus className="w-5 h-5" />
-                    Agregar URL
-                </button>
-            </div>
-
-            <URLTable
-                urls={urls}
-                onEdit={handleEdit}
-                onDelete={handleDelete}
-                loading={loading}
+            {/* Guest Limit Banner */}
+            <GuestLimitBanner
+                user={user}
+                urlCount={urls.length}
+                onUpgrade={onUpgradeClick}
             />
+
+            {/* Card unificado: Header + Tabla */}
+            <div className="bg-white rounded-xl shadow-lg border-2 border-amber-200/50 overflow-hidden">
+                {/* Header con diseño mejorado */}
+                <div className="bg-linear-to-r from-amber-100 via-yellow-100 to-orange-100 p-6 border-b-2 border-amber-200">
+                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                        <div className="flex items-center gap-3">
+                            <div className="bg-linear-to-br from-amber-500 to-yellow-600 p-3 rounded-xl shadow-md">
+                                <Link2 className="w-6 h-6 text-white" />
+                            </div>
+                            <div>
+                                <h2 className="text-2xl font-bold text-gray-800">Mis URLs</h2>
+                                <p className="text-sm text-gray-600 mt-0.5">
+                                    {urls.length === 0 ? 'Aún no tienes URLs' : `${urls.length} URL${urls.length !== 1 ? 's' : ''} creada${urls.length !== 1 ? 's' : ''}`}
+                                </p>
+                            </div>
+                        </div>
+                        <button
+                            onClick={handleCreate}
+                            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 bg-linear-to-r from-amber-500 to-yellow-500 text-white rounded-xl hover:from-amber-600 hover:to-yellow-600 transition-all shadow-md hover:shadow-lg font-bold transform hover:scale-105"
+                        >
+                            <Plus className="w-5 h-5" />
+                            Crear Nueva URL
+                        </button>
+                    </div>
+                </div>
+
+                {/* Tabla de URLs integrada */}
+                <div className="p-6">
+                    <URLTable
+                        urls={urls}
+                        onEdit={handleEdit}
+                        onDelete={handleDelete}
+                        loading={loading}
+                    />
+                </div>
+            </div>
 
             <URLModal
                 isOpen={isModalOpen}
@@ -90,6 +123,7 @@ export function URLManager() {
                 onSave={handleSave}
                 mode={modalMode}
                 initialData={selectedUrl || undefined}
+                user={user}
             />
 
             <CustomAlertDialog

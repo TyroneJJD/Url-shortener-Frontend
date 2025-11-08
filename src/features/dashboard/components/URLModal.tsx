@@ -1,8 +1,9 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { X, Link2, Lock, Globe, Power } from 'lucide-react';
+import { X, Link2, Lock, Globe, Power, AlertCircle } from 'lucide-react';
 import type { URLCreate, URLUpdate } from '@/types/url';
+import type { UserResponse } from '@/types/user';
 
 interface URLModalProps {
     isOpen: boolean;
@@ -15,9 +16,10 @@ interface URLModalProps {
         is_active?: boolean;
     };
     mode: 'create' | 'edit';
+    user?: UserResponse | null;
 }
 
-export function URLModal({ isOpen, onClose, onSave, initialData, mode }: URLModalProps) {
+export function URLModal({ isOpen, onClose, onSave, initialData, mode, user }: URLModalProps) {
     const [formData, setFormData] = useState({
         original_url: '',
         is_private: false,
@@ -25,6 +27,8 @@ export function URLModal({ isOpen, onClose, onSave, initialData, mode }: URLModa
     });
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
+
+    const isGuest = user?.user_type === 'guest';
 
     useEffect(() => {
         if (isOpen) {
@@ -111,20 +115,35 @@ export function URLModal({ isOpen, onClose, onSave, initialData, mode }: URLModa
                         />
                     </div>
 
-                    <div className="flex items-center p-3 bg-gray-50 rounded-lg">
-                        <input
-                            id="is_private"
-                            type="checkbox"
-                            checked={formData.is_private}
-                            onChange={(e) => setFormData({ ...formData, is_private: e.target.checked })}
-                            className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                        />
-                        <label htmlFor="is_private" className="ml-3 flex items-center gap-2 text-sm text-gray-700">
-                            {formData.is_private ? <Lock className="w-4 h-4 text-orange-600" /> : <Globe className="w-4 h-4 text-green-600" />}
-                            <span>
-                                {formData.is_private ? 'URL Privada (requiere autenticación)' : 'URL Pública (accesible para cualquier persona)'}
-                            </span>
-                        </label>
+                    {/* Opción de privacidad */}
+                    <div>
+                        <div className="flex items-center p-3 bg-gray-50 rounded-lg">
+                            <input
+                                id="is_private"
+                                type="checkbox"
+                                checked={formData.is_private}
+                                onChange={(e) => setFormData({ ...formData, is_private: e.target.checked })}
+                                disabled={isGuest}
+                                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded disabled:opacity-50 disabled:cursor-not-allowed"
+                            />
+                            <label htmlFor="is_private" className={`ml-3 flex items-center gap-2 text-sm ${isGuest ? 'text-gray-400' : 'text-gray-700'}`}>
+                                {formData.is_private ? <Lock className="w-4 h-4 text-orange-600" /> : <Globe className="w-4 h-4 text-green-600" />}
+                                <span>
+                                    {formData.is_private ? 'URL Privada (requiere autenticación)' : 'URL Pública (accesible para cualquier persona)'}
+                                </span>
+                            </label>
+                        </div>
+
+                        {/* Mensaje para usuarios invitados */}
+                        {isGuest && (
+                            <div className="mt-2 p-3 bg-amber-50 border border-amber-200 rounded-lg flex items-start gap-2">
+                                <AlertCircle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+                                <p className="text-xs text-amber-800">
+                                    <strong>Cuenta temporal:</strong> Los usuarios invitados solo pueden crear URLs públicas.
+                                    Actualiza a cuenta permanente para crear URLs privadas.
+                                </p>
+                            </div>
+                        )}
                     </div>
 
                     {mode === 'edit' && (

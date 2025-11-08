@@ -1,6 +1,6 @@
 'use client';
 
-import { Copy, Edit2, Trash2, Lock, Globe, CheckCircle2, XCircle } from 'lucide-react';
+import { Copy, Edit2, Trash2, Lock, Globe, CheckCircle2, XCircle, Clock } from 'lucide-react';
 import type { URLResponse } from '@/types/url';
 import { useState } from 'react';
 import { useAlertDialog } from '@/hooks/useAlertDialog';
@@ -19,6 +19,19 @@ export function URLTable({ urls, onEdit, onDelete, loading }: URLTableProps) {
 
     const getShortUrl = (shortCode: string) => {
         return `http://localhost:8000/${shortCode}`;
+    };
+
+    const formatExpirationDate = (expiresAt: string | null): string | null => {
+        if (!expiresAt) return null;
+
+        const date = new Date(expiresAt);
+        const now = new Date();
+        const daysUntilExpiration = Math.ceil((date.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+
+        if (daysUntilExpiration < 0) return 'Expirada';
+        if (daysUntilExpiration === 0) return 'Hoy';
+        if (daysUntilExpiration === 1) return 'Mañana';
+        return `${daysUntilExpiration} días`;
     };
 
     const copyToClipboard = async (text: string, urlId: number) => {
@@ -43,7 +56,7 @@ export function URLTable({ urls, onEdit, onDelete, loading }: URLTableProps) {
     if (urls.length === 0) {
         return (
             <div className="text-center py-8 bg-gray-50 rounded-lg">
-                <p className="text-gray-600">No URLs yet. Create your first shortened URL!</p>
+                <p className="text-gray-600">¡No hay URLs creadas aún!</p>
             </div>
         );
     }
@@ -54,7 +67,7 @@ export function URLTable({ urls, onEdit, onDelete, loading }: URLTableProps) {
                 <thead className="bg-gray-50">
                     <tr>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
-                            URL Original 
+                            URL Original
                         </th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
                             Código Corto
@@ -64,6 +77,9 @@ export function URLTable({ urls, onEdit, onDelete, loading }: URLTableProps) {
                         </th>
                         <th className="px-6 py-3 text-center text-xs font-medium text-gray-700 uppercase tracking-wider">
                             Estado
+                        </th>
+                        <th className="px-6 py-3 text-center text-xs font-medium text-gray-700 uppercase tracking-wider">
+                            Expiración
                         </th>
                         <th className="px-6 py-3 text-center text-xs font-medium text-gray-700 uppercase tracking-wider">
                             Acciones
@@ -134,6 +150,18 @@ export function URLTable({ urls, onEdit, onDelete, loading }: URLTableProps) {
                                         {url.is_active ? 'Active' : 'Inactive'}
                                     </span>
                                 </div>
+                            </td>
+                            <td className="px-6 py-4 text-center">
+                                {url.expires_at ? (
+                                    <div className="flex items-center justify-center gap-1 text-sm">
+                                        <Clock className="w-4 h-4 text-amber-600" />
+                                        <span className="text-amber-700 font-medium">
+                                            {formatExpirationDate(url.expires_at)}
+                                        </span>
+                                    </div>
+                                ) : (
+                                    <span className="text-sm text-gray-500">Sin expiración</span>
+                                )}
                             </td>
                             <td className="px-6 py-4 text-center">
                                 <div className="flex items-center justify-center gap-2">

@@ -59,6 +59,20 @@ export const api = {
             method: 'POST',
         }),
 
+    // Create guest session
+    createGuestSession: (data: { uuid: string }) =>
+        apiFetch('/auth/guest', {
+            method: 'POST',
+            body: JSON.stringify(data),
+        }),
+
+    // Migrate guest to registered user
+    migrateToRegistered: (data: { username: string; email: string; password: string }) =>
+        apiFetch('/auth/migrate', {
+            method: 'POST',
+            body: JSON.stringify(data),
+        }),
+
     // Get current authenticated user
     getCurrentUser: () => apiFetch('/auth/me', { method: 'GET' }),
 
