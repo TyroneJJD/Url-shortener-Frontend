@@ -170,40 +170,47 @@ export default function Home() {
             </p>
 
             {/* Opciones de acceso */}
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center max-w-md mx-auto">
+            <div className="flex flex-col gap-4 justify-center items-center max-w-md mx-auto">
+              {/* Botón principal - Registrarse */}
+              <button
+                onClick={() => {
+                  setIsLogin(false);
+                  setShowAuthForms(true);
+                }}
+                className="w-full px-8 py-4 bg-linear-to-r from-amber-500 to-yellow-500 text-white rounded-xl font-bold text-lg hover:from-amber-600 hover:to-yellow-600 transition-all shadow-lg hover:shadow-xl transform hover:scale-105 transition-duration-ease-in-out"
+              >
+                Crear Cuenta Gratis
+              </button>
+
+              {/* Leyenda e inicio de sesión */}
+              <div className="flex items-center gap-2 text-gray-600">
+                <span>¿Ya tienes una cuenta?</span>
+                <button
+                  onClick={() => {
+                    setIsLogin(true);
+                    setShowAuthForms(true);
+                  }}
+                  className="text-amber-600 hover:text-amber-700 font-semibold hover:underline"
+                >
+                  Inicia sesión
+                </button>
+              </div>
+
+              {/* Separador */}
+              <div className="flex items-center gap-3 w-full my-2">
+                <div className="flex-1 border-t border-gray-300"></div>
+                <span className="text-gray-500 text-sm">o</span>
+                <div className="flex-1 border-t border-gray-300"></div>
+              </div>
+
+              {/* Continuar como invitado */}
               <button
                 onClick={handleContinueAsGuest}
-                className="group w-full sm:w-auto flex items-center justify-center gap-3 px-8 py-4 bg-linear-to-r from-amber-500 to-yellow-500 text-white rounded-xl font-bold text-lg hover:from-amber-600 hover:to-yellow-600 transition-all shadow-lg hover:shadow-xl transform hover:scale-105"
+                className="group w-full flex items-center justify-center gap-3 px-8 py-3 bg-white text-gray-700 rounded-xl font-medium hover:bg-gray-50 transition-all shadow-md border-2 border-gray-200 hover:border-amber-300"
               >
-                <UserCircle className="w-6 h-6" />
+                <UserCircle className="w-5 h-5" />
                 Continuar como Invitado
               </button>
-
-              <button
-                onClick={() => setShowAuthForms(true)}
-                className="w-full sm:w-auto px-8 py-4 bg-white text-gray-800 rounded-xl font-semibold text-lg hover:bg-gray-50 transition-all shadow-md border-2 border-gray-200 hover:border-amber-300"
-              >
-                Iniciar Sesión / Registrarse
-              </button>
-            </div>
-
-            {/* Beneficios */}
-            <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6 text-left">
-              <div className="bg-white/70 backdrop-blur-sm p-6 rounded-xl shadow-md">
-                <div className="text-3xl mb-2">⚡</div>
-                <h3 className="font-bold text-gray-800 mb-2">Rápido y fácil</h3>
-                <p className="text-sm text-gray-600">Crea enlaces cortos en un clic</p>
-              </div>
-              <div className="bg-white/70 backdrop-blur-sm p-6 rounded-xl shadow-md">
-                <div className="text-3xl mb-2">🔒</div>
-                <h3 className="font-bold text-gray-800 mb-2">Privacidad</h3>
-                <p className="text-sm text-gray-600">URLs privadas solo para ti</p>
-              </div>
-              <div className="bg-white/70 backdrop-blur-sm p-6 rounded-xl shadow-md">
-                <div className="text-3xl mb-2">📊</div>
-                <h3 className="font-bold text-gray-800 mb-2">Gestión simple</h3>
-                <p className="text-sm text-gray-600">Edita y organiza tus enlaces</p>
-              </div>
             </div>
           </div>
         )}
