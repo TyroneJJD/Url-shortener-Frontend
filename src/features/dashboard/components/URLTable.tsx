@@ -5,6 +5,7 @@ import type { URLResponse } from '@/types/url';
 import { useState } from 'react';
 import { useAlertDialog } from '@/hooks/useAlertDialog';
 import { CustomAlertDialog } from '@/components/CustomAlertDialog';
+import { API_BASE_URL_EXPORT } from '@/utils/api';
 
 interface URLTableProps {
     urls: URLResponse[];
@@ -18,7 +19,7 @@ export function URLTable({ urls, onEdit, onDelete, loading }: URLTableProps) {
     const { dialogState, showAlert, showConfirm, handleConfirm, handleCancel } = useAlertDialog();
 
     const getShortUrl = (shortCode: string) => {
-        return `http://localhost:8000/${shortCode}`;
+        return `${API_BASE_URL_EXPORT}/${shortCode}`;
     };
 
     const formatExpirationDate = (expiresAt: string | null): string | null => {
