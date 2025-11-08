@@ -32,15 +32,13 @@ export default function Home() {
   // If user is logged in, show dashboard
   if (user) {
     return (
-      <main className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100">
-        <UserDashboard user={user} onLogout={handleLogout} />
-      </main>
+      <UserDashboard user={user} onLogout={handleLogout} />
     );
   }
 
   // Login/Register UI
   return (
-    <main className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100">
+    <main className="min-h-screen flex items-center justify-center bg-linear-to-br from-blue-50 to-indigo-100">
       <div>
         {successMessage && (
           <div className="mb-4 p-3 rounded bg-green-100 text-green-700 text-center max-w-md">
