@@ -1,13 +1,16 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, use } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { ShieldOff, XCircle } from 'lucide-react';
 
-export default function ShortCodePage({ params }: { params: { shortCode: string } }) {
+export default function ShortCodePage({ params }: { params: Promise<{ shortCode: string }> }) {
     const router = useRouter();
     const searchParams = useSearchParams();
     const [error, setError] = useState<'unauthorized' | 'not-found' | null>(null);
+
+    // Unwrap the params Promise
+    const { shortCode } = use(params);
 
     useEffect(() => {
         // Check if we were redirected here with an error parameter
@@ -28,17 +31,28 @@ export default function ShortCodePage({ params }: { params: { shortCode: string 
     }, [searchParams]);
 
     if (error === 'unauthorized') {
+        // Get the short code to pass as return URL
+        const returnUrl = encodeURIComponent(shortCode);
+
         return (
             <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-blue-50 to-indigo-100 p-4">
                 <div className="bg-white p-8 rounded-lg shadow-lg max-w-md w-full text-center">
                     <ShieldOff className="w-16 h-16 text-orange-500 mx-auto mb-4" />
                     <h1 className="text-3xl font-bold text-gray-800 mb-4">Access Denied</h1>
-                    <p className="text-gray-600 mb-6">
+                    <p className="text-gray-600 mb-4">
                         This URL is private and requires authentication to access.
                     </p>
+                    <div className="mb-6 p-3 bg-blue-50 rounded-lg">
+                        <p className="text-sm text-blue-800">
+                            <strong>Short URL:</strong> <code className="bg-blue-100 px-2 py-1 rounded text-xs">{shortCode}</code>
+                        </p>
+                        <p className="text-xs text-blue-600 mt-1">
+                            You'll be redirected here after logging in.
+                        </p>
+                    </div>
                     <div className="space-y-3">
                         <button
-                            onClick={() => router.push('/')}
+                            onClick={() => router.push(`/?returnUrl=${returnUrl}`)}
                             className="w-full px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors font-semibold"
                         >
                             Login to Access

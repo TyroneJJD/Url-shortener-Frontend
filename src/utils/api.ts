@@ -59,6 +59,9 @@ export const api = {
             method: 'POST',
         }),
 
+    // Get current authenticated user
+    getCurrentUser: () => apiFetch('/auth/me', { method: 'GET' }),
+
     // URL endpoints
     getMyUrls: () => apiFetch('/urls/me/all', { method: 'GET' }),
 

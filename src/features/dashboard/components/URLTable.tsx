@@ -3,6 +3,8 @@
 import { Copy, Edit2, Trash2, Lock, Globe, CheckCircle2, XCircle } from 'lucide-react';
 import type { URLResponse } from '@/types/url';
 import { useState } from 'react';
+import { useAlertDialog } from '@/hooks/useAlertDialog';
+import { CustomAlertDialog } from '@/components/CustomAlertDialog';
 
 interface URLTableProps {
     urls: URLResponse[];
@@ -13,6 +15,7 @@ interface URLTableProps {
 
 export function URLTable({ urls, onEdit, onDelete, loading }: URLTableProps) {
     const [copiedId, setCopiedId] = useState<number | null>(null);
+    const { dialogState, showAlert, showConfirm, handleConfirm, handleCancel } = useAlertDialog();
 
     const getShortUrl = (shortCode: string) => {
         return `http://localhost:8000/${shortCode}`;
@@ -25,7 +28,7 @@ export function URLTable({ urls, onEdit, onDelete, loading }: URLTableProps) {
             setTimeout(() => setCopiedId(null), 2000);
         } catch (err) {
             console.error('Failed to copy:', err);
-            alert('Failed to copy to clipboard');
+            showAlert('Error', 'Failed to copy to clipboard');
         }
     };
 
@@ -143,9 +146,11 @@ export function URLTable({ urls, onEdit, onDelete, loading }: URLTableProps) {
                                     </button>
                                     <button
                                         onClick={() => {
-                                            if (confirm('Are you sure you want to delete this URL?')) {
-                                                onDelete(url.id);
-                                            }
+                                            showConfirm(
+                                                'Delete URL',
+                                                'Are you sure you want to delete this URL? This action cannot be undone.',
+                                                () => onDelete(url.id)
+                                            );
                                         }}
                                         className="inline-flex items-center gap-1 px-3 py-1 text-sm bg-red-500 text-white rounded hover:bg-red-600 transition-colors"
                                     >
@@ -158,6 +163,15 @@ export function URLTable({ urls, onEdit, onDelete, loading }: URLTableProps) {
                     ))}
                 </tbody>
             </table>
+
+            <CustomAlertDialog
+                isOpen={dialogState.isOpen}
+                title={dialogState.title}
+                description={dialogState.description}
+                type={dialogState.type}
+                onConfirm={handleConfirm}
+                onCancel={handleCancel}
+            />
         </div>
     );
 }

@@ -6,6 +6,8 @@ import { api } from '@/utils/api';
 import type { URLResponse, URLCreate, URLUpdate } from '@/types/url';
 import { URLTable } from './URLTable';
 import { URLModal } from './URLModal';
+import { useAlertDialog } from '@/hooks/useAlertDialog';
+import { CustomAlertDialog } from '@/components/CustomAlertDialog';
 
 export function URLManager() {
     const [urls, setUrls] = useState<URLResponse[]>([]);
@@ -13,6 +15,7 @@ export function URLManager() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [modalMode, setModalMode] = useState<'create' | 'edit'>('create');
     const [selectedUrl, setSelectedUrl] = useState<URLResponse | null>(null);
+    const { dialogState, showAlert, handleConfirm, handleCancel } = useAlertDialog();
 
     const loadUrls = async () => {
         try {
@@ -57,7 +60,7 @@ export function URLManager() {
             await loadUrls();
         } catch (err) {
             console.error('Failed to delete URL:', err);
-            alert('Failed to delete URL');
+            showAlert('Error', 'Failed to delete URL. Please try again.');
         }
     };
 
@@ -87,6 +90,15 @@ export function URLManager() {
                 onSave={handleSave}
                 mode={modalMode}
                 initialData={selectedUrl || undefined}
+            />
+
+            <CustomAlertDialog
+                isOpen={dialogState.isOpen}
+                title={dialogState.title}
+                description={dialogState.description}
+                type={dialogState.type}
+                onConfirm={handleConfirm}
+                onCancel={handleCancel}
             />
         </div>
     );

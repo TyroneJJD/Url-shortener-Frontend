@@ -1,15 +1,41 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useSearchParams, useRouter } from 'next/navigation';
 import type { UserResponse } from '@/types/user';
 import { LoginForm, RegisterForm, UserDashboard } from '@/features/auth/components';
+import { useAuth } from '@/hooks/useAuth';
+import { api } from '@/utils/api';
 
 export default function Home() {
   const [isLogin, setIsLogin] = useState(true);
-  const [user, setUser] = useState<UserResponse | null>(null);
   const [successMessage, setSuccessMessage] = useState('');
+  const [returnUrl, setReturnUrl] = useState<string>('');
+  const searchParams = useSearchParams();
+  const router = useRouter();
 
-  const handleLoginSuccess = (userData: UserResponse) => {
+  // Use custom auth hook to check for existing session
+  const { user, loading, setUser } = useAuth();
+
+  useEffect(() => {
+    const returnUrlParam = searchParams.get('returnUrl');
+    if (returnUrlParam) {
+      setReturnUrl(decodeURIComponent(returnUrlParam));
+    }
+  }, [searchParams]);
+
+  const handleLoginSuccess = (userData: UserResponse, returnUrlFromLogin?: string) => {
+    // If there's a return URL, redirect immediately without setting user state
+    const urlToRedirect = returnUrlFromLogin || returnUrl;
+    if (urlToRedirect) {
+      // Clear the return URL from browser URL
+      router.replace('/');
+      // Redirect to the backend with the short code immediately
+      window.location.href = `http://localhost:8000/${urlToRedirect}`;
+      return; // Don't set user state, just redirect
+    }
+
+    // Only set user state if there's no return URL (normal login flow)
     setUser(userData);
   };
 
@@ -20,14 +46,32 @@ export default function Home() {
     setTimeout(() => setSuccessMessage(''), 5000);
   };
 
-  const handleLogout = () => {
-    setUser(null);
+  const handleLogout = async () => {
+    try {
+      await api.logout();
+    } catch (error) {
+      console.error('Logout error:', error);
+    } finally {
+      setUser(null);
+    }
   };
 
   const handleToggleForm = () => {
     setIsLogin(!isLogin);
     setSuccessMessage('');
   };
+
+  // Show loading state while checking authentication
+  if (loading) {
+    return (
+      <main className="min-h-screen flex items-center justify-center bg-linear-to-br from-blue-50 to-indigo-100">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-blue-500 mx-auto mb-4"></div>
+          <p className="text-gray-600 text-lg">Loading...</p>
+        </div>
+      </main>
+    );
+  }
 
   // If user is logged in, show dashboard
   if (user) {
@@ -50,6 +94,7 @@ export default function Home() {
           <LoginForm
             onLoginSuccess={handleLoginSuccess}
             onToggleForm={handleToggleForm}
+            returnUrl={returnUrl}
           />
         ) : (
           <RegisterForm

@@ -5,11 +5,12 @@ import { api } from '@/utils/api';
 import type { LoginData, UserResponse } from '@/types/user';
 
 interface LoginFormProps {
-    onLoginSuccess: (user: UserResponse) => void;
+    onLoginSuccess: (user: UserResponse, returnUrl?: string) => void;
     onToggleForm: () => void;
+    returnUrl?: string;
 }
 
-export function LoginForm({ onLoginSuccess, onToggleForm }: LoginFormProps) {
+export function LoginForm({ onLoginSuccess, onToggleForm, returnUrl }: LoginFormProps) {
     const [loginData, setLoginData] = useState<LoginData>({
         email: '',
         password: '',
@@ -24,7 +25,7 @@ export function LoginForm({ onLoginSuccess, onToggleForm }: LoginFormProps) {
 
         try {
             const response: any = await api.login(loginData);
-            onLoginSuccess(response.user);
+            onLoginSuccess(response.user, returnUrl);
             console.log('Login successful:', response.user);
         } catch (err) {
             setError(err instanceof Error ? err.message : 'Login failed');
@@ -38,6 +39,17 @@ export function LoginForm({ onLoginSuccess, onToggleForm }: LoginFormProps) {
             <h1 className="text-3xl font-bold text-center mb-6 text-gray-800">
                 Login
             </h1>
+
+            {returnUrl && (
+                <div className="mb-4 p-3 rounded bg-blue-50 border border-blue-200">
+                    <p className="text-sm text-blue-800">
+                        <strong>Redirecting to:</strong> <code className="bg-blue-100 px-2 py-1 rounded text-xs">{returnUrl}</code>
+                    </p>
+                    <p className="text-xs text-blue-600 mt-1">
+                        After successful login, you'll be redirected to this private URL.
+                    </p>
+                </div>
+            )}
 
             {error && (
                 <div className="mb-4 p-3 rounded bg-red-100 text-red-700">
