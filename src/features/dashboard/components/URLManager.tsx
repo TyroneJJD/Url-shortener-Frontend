@@ -67,13 +67,13 @@ export function URLManager() {
     return (
         <div className="w-full">
             <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold text-gray-800">My URLs</h2>
+                <h2 className="text-2xl font-bold text-gray-800">Mis URLs</h2>
                 <button
                     onClick={handleCreate}
                     className="inline-flex items-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors font-semibold"
                 >
                     <Plus className="w-5 h-5" />
-                    Add URL
+                    Agregar URL
                 </button>
             </div>
 

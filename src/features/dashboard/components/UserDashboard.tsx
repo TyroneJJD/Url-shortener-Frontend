@@ -30,7 +30,7 @@ export function UserDashboard({ user, onLogout }: UserDashboardProps) {
                     <div className="flex justify-between items-center">
                         <div>
                             <h1 className="text-3xl font-bold text-gray-800">
-                                Welcome, {user.username}!
+                                Hola, {user.username}!
                             </h1>
                             <p className="text-gray-600 mt-1">{user.email}</p>
                         </div>
@@ -39,7 +39,7 @@ export function UserDashboard({ user, onLogout }: UserDashboardProps) {
                             className="inline-flex items-center gap-2 px-6 py-2 bg-red-500 text-white rounded-lg font-semibold hover:bg-red-600 transition-colors"
                         >
                             <LogOut className="w-5 h-5" />
-                            Logout
+                            Salir
                         </button>
                     </div>
                 </div>

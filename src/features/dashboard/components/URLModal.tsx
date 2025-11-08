@@ -78,7 +78,7 @@ export function URLModal({ isOpen, onClose, onSave, initialData, mode }: URLModa
             <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-6">
                 <div className="flex justify-between items-center mb-4">
                     <h2 className="text-2xl font-bold text-gray-800">
-                        {mode === 'create' ? 'Create Short URL' : 'Edit URL'}
+                        {mode === 'create' ? 'Crear URL' : 'Editar URL'}
                     </h2>
                     <button
                         onClick={onClose}
@@ -98,7 +98,7 @@ export function URLModal({ isOpen, onClose, onSave, initialData, mode }: URLModa
                     <div>
                         <label htmlFor="original_url" className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-1">
                             <Link2 className="w-4 h-4" />
-                            Original URL
+                            URL Original
                         </label>
                         <input
                             id="original_url"
@@ -122,7 +122,7 @@ export function URLModal({ isOpen, onClose, onSave, initialData, mode }: URLModa
                         <label htmlFor="is_private" className="ml-3 flex items-center gap-2 text-sm text-gray-700">
                             {formData.is_private ? <Lock className="w-4 h-4 text-orange-600" /> : <Globe className="w-4 h-4 text-green-600" />}
                             <span>
-                                {formData.is_private ? 'Private URL (requires authentication)' : 'Public URL (accessible to anyone)'}
+                                {formData.is_private ? 'URL Privada (requiere autenticación)' : 'URL Pública (accesible para cualquier persona)'}
                             </span>
                         </label>
                     </div>
@@ -138,7 +138,7 @@ export function URLModal({ isOpen, onClose, onSave, initialData, mode }: URLModa
                             />
                             <label htmlFor="is_active" className="ml-3 flex items-center gap-2 text-sm text-gray-700">
                                 <Power className="w-4 h-4" />
-                                <span>Active (URL is accessible)</span>
+                                <span>Activa (URL es accesible)</span>
                             </label>
                         </div>
                     )}
@@ -149,14 +149,14 @@ export function URLModal({ isOpen, onClose, onSave, initialData, mode }: URLModa
                             onClick={onClose}
                             className="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
                         >
-                            Cancel
+                            Cancelar
                         </button>
                         <button
                             type="submit"
                             disabled={loading}
                             className="flex-1 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors disabled:bg-gray-400"
                         >
-                            {loading ? 'Saving...' : mode === 'create' ? 'Create' : 'Save'}
+                            {loading ? 'Guardando...' : mode === 'create' ? 'Crear' : 'Guardar Cambios'}
                         </button>
                     </div>
                 </form>

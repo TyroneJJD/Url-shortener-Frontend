@@ -54,19 +54,19 @@ export function URLTable({ urls, onEdit, onDelete, loading }: URLTableProps) {
                 <thead className="bg-gray-50">
                     <tr>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
-                            Original URL
+                            URL Original 
                         </th>
                         <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">
-                            Short Code
+                            Código Corto
                         </th>
                         <th className="px-6 py-3 text-center text-xs font-medium text-gray-700 uppercase tracking-wider">
-                            Privacy
+                            Privacidad
                         </th>
                         <th className="px-6 py-3 text-center text-xs font-medium text-gray-700 uppercase tracking-wider">
-                            Status
+                            Estado
                         </th>
                         <th className="px-6 py-3 text-center text-xs font-medium text-gray-700 uppercase tracking-wider">
-                            Actions
+                            Acciones
                         </th>
                     </tr>
                 </thead>
@@ -90,7 +90,7 @@ export function URLTable({ urls, onEdit, onDelete, loading }: URLTableProps) {
                                     <button
                                         onClick={() => copyToClipboard(getShortUrl(url.short_code), url.id)}
                                         className="flex items-center gap-2 text-blue-600 hover:text-blue-800 transition-colors group"
-                                        title="Click to copy full URL"
+                                        title="Click para copiar"
                                     >
                                         <code className="text-sm font-mono cursor-pointer">
                                             {url.short_code}
@@ -113,12 +113,12 @@ export function URLTable({ urls, onEdit, onDelete, loading }: URLTableProps) {
                                     {url.is_private ? (
                                         <>
                                             <Lock className="w-3 h-3" />
-                                            Private
+                                            Privado
                                         </>
                                     ) : (
                                         <>
                                             <Globe className="w-3 h-3" />
-                                            Public
+                                            Público
                                         </>
                                     )}
                                 </span>
@@ -142,20 +142,20 @@ export function URLTable({ urls, onEdit, onDelete, loading }: URLTableProps) {
                                         className="inline-flex items-center gap-1 px-3 py-1 text-sm bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
                                     >
                                         <Edit2 className="w-4 h-4" />
-                                        Edit
+                                        Editar
                                     </button>
                                     <button
                                         onClick={() => {
                                             showConfirm(
-                                                'Delete URL',
-                                                'Are you sure you want to delete this URL? This action cannot be undone.',
+                                                'Eliminar URL',
+                                                '¿Estás seguro de que deseas eliminar esta URL? Esta acción no se puede deshacer.',
                                                 () => onDelete(url.id)
                                             );
                                         }}
                                         className="inline-flex items-center gap-1 px-3 py-1 text-sm bg-red-500 text-white rounded hover:bg-red-600 transition-colors"
                                     >
                                         <Trash2 className="w-4 h-4" />
-                                        Delete
+                                        Eliminar
                                     </button>
                                 </div>
                             </td>
