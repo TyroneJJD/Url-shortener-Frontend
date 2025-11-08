@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams, useRouter, redirect } from 'next/navigation';
 import { UserCircle, Zap } from 'lucide-react';
 import type { UserResponse } from '@/types/user';
@@ -9,7 +9,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { api } from '@/utils/api';
 import { getOrCreateGuestUUID, setLogoutFlag, clearLogoutFlag, hasLoggedOut } from '@/utils/guestSession';
 
-export default function Home() {
+function HomeContent() {
   const [isLogin, setIsLogin] = useState(true);
   const [successMessage, setSuccessMessage] = useState('');
   const [returnUrl, setReturnUrl] = useState<string>('');
@@ -50,21 +50,6 @@ export default function Home() {
     // Si el usuario hizo logout explícitamente, no crear sesión guest
     if (hasLoggedOut()) return;
 
-    // Si no hay usuario y no debe mostrar auth, crear sesión guest
-    const createGuestSession = async () => {
-      try {
-        const guestUUID = getOrCreateGuestUUID();
-        const guestData: any = await api.createGuestSession({ uuid: guestUUID });
-
-        // Extract user from guest session response
-        const guestUser = guestData.user || guestData;
-        setUser(guestUser);
-      } catch (error) {
-        console.error('Failed to create guest session:', error);
-      }
-    };
-
-    createGuestSession();
   }, [loading, user, shouldShowAuth, setUser]);
 
   const handleLoginSuccess = (userData: UserResponse, returnUrlFromLogin?: string) => {
@@ -250,5 +235,20 @@ export default function Home() {
         )}
       </div>
     </main>
+  );
+}
+
+export default function Home() {
+  return (
+    <Suspense fallback={
+      <main className="min-h-screen flex items-center justify-center bg-linear-to-br from-amber-50 via-yellow-50 to-orange-50">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-amber-500 mx-auto mb-4"></div>
+          <p className="text-gray-600 text-lg">Loading...</p>
+        </div>
+      </main>
+    }>
+      <HomeContent />
+    </Suspense>
   );
 }
