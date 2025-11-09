@@ -42,7 +42,7 @@ export function URLManager({ user, onUpgradeClick }: URLManagerProps) {
             
             const response = await api.getMyUrls({ 
                 offset: calculatedOffset, 
-                include_access_history: false 
+                with_history: false 
             });
 
             // Manejar el caso donde el backend retorna un array vacío en lugar de un objeto paginado
