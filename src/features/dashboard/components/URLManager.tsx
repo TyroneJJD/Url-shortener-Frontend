@@ -150,17 +150,18 @@ export function URLManager({ user, onUpgradeClick }: URLManagerProps) {
             const response = await api.createUrlsBulk(file) as BulkURLResponse;
 
             showAlert('Éxito', `Se crearon ${response.urls.length} URLs correctamente`);    
-            
+
             await loadUrls(1); // Volver a la primera página
         } catch (err) {
             console.error('Failed to upload URLs:', err);
-            showAlert('Error', 'No se pudo procesar el archivo. Verifica el formato.');
+            showAlert('Error', err instanceof Error ? err.message : 'No se pudo procesar el archivo. Verifica el formato.');
         } finally {
             setIsUploading(false);
             if (fileInputRef.current) {
-                fileInputRef.current.value = '';
+            fileInputRef.current.value = '';
             }
         }
+        
     };
 
     const handlePageChange = (page: number) => {
