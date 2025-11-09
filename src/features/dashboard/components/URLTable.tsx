@@ -6,15 +6,27 @@ import { useState } from 'react';
 import { useAlertDialog } from '@/hooks/useAlertDialog';
 import { CustomAlertDialog } from '@/components/CustomAlertDialog';
 import { API_BASE_URL_EXPORT } from '@/utils/api';
+import { Paginator } from '@/utils/Paginator';
 
 interface URLTableProps {
     urls: URLResponse[];
     onEdit: (url: URLResponse) => void;
     onDelete: (urlId: number) => void;
     loading?: boolean;
+    currentPage?: number;
+    totalPages?: number;
+    onPageChange?: (page: number) => void;
 }
 
-export function URLTable({ urls, onEdit, onDelete, loading }: URLTableProps) {
+export function URLTable({ 
+    urls, 
+    onEdit, 
+    onDelete, 
+    loading, 
+    currentPage = 1, 
+    totalPages = 1, 
+    onPageChange 
+}: URLTableProps) {
     const [copiedId, setCopiedId] = useState<number | null>(null);
     const { dialogState, showAlert, showConfirm, handleConfirm, handleCancel } = useAlertDialog();
 
@@ -192,6 +204,15 @@ export function URLTable({ urls, onEdit, onDelete, loading }: URLTableProps) {
                     ))}
                 </tbody>
             </table>
+
+            {/* Paginación */}
+            {onPageChange && (
+                <Paginator
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    onPageChange={onPageChange}
+                />
+            )}
 
             <CustomAlertDialog
                 isOpen={dialogState.isOpen}

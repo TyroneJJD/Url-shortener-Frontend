@@ -1,3 +1,5 @@
+import { off } from "process";
+
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000';
 
 interface FetchOptions extends RequestInit {
@@ -77,13 +79,63 @@ export const api = {
     getCurrentUser: () => apiFetch('/auth/me', { method: 'GET' }),
 
     // URL endpoints
-    getMyUrls: () => apiFetch('/urls/me/all', { method: 'GET' }),
+    getMyUrls: (params?: { offset?: number; with_history?: boolean; export?: boolean }) => {
+        const queryParams = new URLSearchParams();
+        if (params?.offset !== undefined) queryParams.append('offset', params.offset.toString());
+        if (params?.with_history !== undefined) {
+            queryParams.append('with_history', params.with_history.toString());
+        }
+        if (params?.export !== undefined) {
+            queryParams.append('export', params.export.toString());
+        }
+        const queryString = queryParams.toString();
+        
+        // Si export=true, el backend retorna un archivo, no JSON
+        if (params?.export) {
+            const url = `${API_BASE_URL}/urls/me/all${queryString ? `?${queryString}` : ''}`;
+            return fetch(url, {
+                method: 'GET',
+                credentials: 'include',
+            }).then(async (response) => {
+                if (!response.ok) {
+                    const errorData = await response.json().catch(() => ({}));
+                    throw new Error(
+                        errorData.detail || `API Error: ${response.status} ${response.statusText}`
+                    );
+                }
+                return response.blob();
+            });
+        }
+        
+        return apiFetch(`/urls/me/all${queryString ? `?${queryString}` : ''}`, { method: 'GET' });
+    },
 
     createUrl: (data: { original_url: string; is_private?: boolean }) =>
         apiFetch('/urls', {
             method: 'POST',
             body: JSON.stringify(data),
         }),
+
+    createUrlsBulk: async (file: File) => {
+        const formData = new FormData();
+        formData.append('file', file);
+
+        const url = `${API_BASE_URL}/urls/bulk`;
+        const response = await fetch(url, {
+            method: 'POST',
+            body: formData,
+            credentials: 'include',
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => ({}));
+            throw new Error(
+                errorData.detail || `API Error: ${response.status} ${response.statusText}`
+            );
+        }
+
+        return response.json();
+    },
 
     updateUrl: (
         urlId: number,
