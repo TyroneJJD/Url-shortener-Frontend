@@ -33,9 +33,6 @@ function HomeContent() {
     // Si viene el parámetro showAuth=true, mostrar los formularios automáticamente
     if (showAuthParam === 'true') {
       setShowAuthForms(true);
-    } else {
-      // Si no hay parámetro showAuth, ocultar formularios
-      setShowAuthForms(false);
     }
   }, [searchParams]);
 
