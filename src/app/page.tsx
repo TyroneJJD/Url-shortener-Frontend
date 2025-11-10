@@ -43,8 +43,8 @@ function HomeContent() {
     // If there's a return URL, redirect immediately without setting user state
     const urlToRedirect = returnUrlFromLogin || returnUrl;
     if (urlToRedirect) {
-      // Clear the return URL from browser URL
-      router.replace('/');
+      // Clear the return URL from browser URL (replace history to avoid back button issues)
+      window.history.replaceState({}, '', '/');
       // Redirect to the backend with the short code immediately
       window.location.href = `${API_BASE_URL_EXPORT}/${urlToRedirect}`;
       return; // Don't set user state, just redirect
@@ -103,7 +103,7 @@ function HomeContent() {
   if (loading) {
     return (
       <main className="min-h-screen flex items-center justify-center bg-linear-to-br from-amber-50 via-yellow-50 to-orange-50">
-            <LoadingSpinner />
+        <LoadingSpinner />
       </main>
     );
   }
