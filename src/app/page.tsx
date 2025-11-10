@@ -37,22 +37,6 @@ function HomeContent() {
     }
   }, [searchParams]);
 
-  // Efecto para crear sesión guest solo si NO viene showAuth=true y NO hay usuario
-  useEffect(() => {
-    // Solo ejecutar después de que loading termine
-    if (loading) return;
-
-    // Si ya hay un usuario, no hacer nada
-    if (user) return;
-
-    // Si debe mostrar auth (viene de una página que requiere login), no crear guest
-    if (shouldShowAuth) return;
-
-    // Si el usuario hizo logout explícitamente, no crear sesión guest
-    if (hasLoggedOut()) return;
-
-  }, [loading, user, shouldShowAuth, setUser]);
-
   const handleLoginSuccess = (userData: UserResponse, returnUrlFromLogin?: string) => {
     // Limpiar la bandera de logout al iniciar sesión exitosamente
     clearLogoutFlag();

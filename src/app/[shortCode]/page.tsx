@@ -22,14 +22,8 @@ export default function ShortCodePage({ params }: { params: Promise<{ shortCode:
             setError('unauthorized');
         } else if (errorParam === 'not-found' || errorParam === '404') {
             setError('not-found');
-        } else if (errorParam) {
-            // Any other error, treat as not found
-            setError('not-found');
-        } else {
-            // If no error parameter, the URL should have been handled by the backend
-            // If we reach this component without an error, something went wrong
-            setError('not-found');
         }
+
     }, [searchParams]);
 
     if (error === 'guest-forbidden') {

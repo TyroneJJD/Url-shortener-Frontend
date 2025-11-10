@@ -10,6 +10,7 @@ import { URLModal } from './URLModal';
 import { GuestLimitBanner } from './GuestLimitBanner';
 import { useAlertDialog } from '@/hooks/useAlertDialog';
 import { CustomAlertDialog } from '@/components/CustomAlertDialog';
+import  downloadFile from '@/utils/file_download';
 
 interface URLManagerProps {
     user: UserResponse;
@@ -47,7 +48,7 @@ export function URLManager({ user, onUpgradeClick }: URLManagerProps) {
 
             // Manejar el caso donde el backend retorna un array vacío en lugar de un objeto paginado
             if (Array.isArray(response)) {
-                // Respuesta es un array directo (formato antiguo o sin paginación)
+                // Respuesta es un array directo (no había urls o fallo en paginación)
                 setUrls(response as URLResponse[]);
                 setTotalPages(1);
                 setTotalUrls(response.length);
@@ -114,16 +115,7 @@ export function URLManager({ user, onUpgradeClick }: URLManagerProps) {
                 export: true
             }) as Blob;
 
-            // Crear enlace de descarga
-            const url = URL.createObjectURL(blob);
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = `my-urls-${new Date().toISOString().split('T')[0]}.json`;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            URL.revokeObjectURL(url);
-
+            downloadFile(blob, `my-urls-${new Date().toISOString().split('T')[0]}.json`);
             showAlert('Éxito', 'URLs descargadas correctamente con historial de accesos');
         } catch (err) {
             console.error('Failed to download URLs:', err);
