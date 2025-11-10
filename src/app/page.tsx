@@ -128,7 +128,7 @@ function HomeContent() {
               </div>
             </div>
             <h1 className="text-5xl font-bold text-gray-800 mb-4">
-              URL Shortener
+              ShortlyUrl
             </h1>
             <p className="text-xl text-gray-600 mb-8">
               Acorta tus enlaces en segundos y compártelos fácilmente
