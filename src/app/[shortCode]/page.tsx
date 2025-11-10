@@ -3,11 +3,13 @@
 import { useEffect, useState, use } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { ShieldOff, XCircle } from 'lucide-react';
+import LoadingSpinner from '@/components/LoadingSpinner';
 
 export default function ShortCodePage({ params }: { params: Promise<{ shortCode: string }> }) {
     const router = useRouter();
     const searchParams = useSearchParams();
     const [error, setError] = useState<'unauthorized' | 'not-found' | 'guest-forbidden' | null>(null);
+    const [isLoading, setIsLoading] = useState(true);
 
     // Unwrap the params Promise
     const { shortCode } = use(params);
@@ -24,7 +26,15 @@ export default function ShortCodePage({ params }: { params: Promise<{ shortCode:
             setError('not-found');
         }
 
+        setIsLoading(false);
+
     }, [searchParams]);
+
+    if (isLoading) {
+        return (
+            <LoadingSpinner />
+        );
+    }
 
     if (error === 'guest-forbidden') {
         // Guest user trying to access private URL

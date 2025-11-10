@@ -27,7 +27,6 @@ export function URLManager({ user, onUpgradeClick }: URLManagerProps) {
     const [totalPages, setTotalPages] = useState(1);
     const [totalUrls, setTotalUrls] = useState(0);
     const [isUploading, setIsUploading] = useState(false);
-    const [offset, setOffset] = useState(0);
     const fileInputRef = useRef<HTMLInputElement>(null);
     const { dialogState, showAlert, handleConfirm, handleCancel } = useAlertDialog();
 
@@ -39,8 +38,7 @@ export function URLManager({ user, onUpgradeClick }: URLManagerProps) {
             setLoading(true);
             // Calcular offset basado en la página: offset = (page - 1) * PAGE_SIZE
             const calculatedOffset = (page - 1) * PAGE_SIZE;
-            setOffset(calculatedOffset);
-            
+                        
             const response = await api.getMyUrls({ 
                 offset: calculatedOffset, 
                 with_history: false 

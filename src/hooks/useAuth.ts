@@ -42,7 +42,7 @@ export function useAuth(): UseAuthReturn {
                 // Fallback in case the structure changes
                 setUser(data);
             }
-        } catch (error) {
+        } catch {
             // No valid session - just set user to null
             // Guest session creation should be handled explicitly by the component
             console.log('No active session found');

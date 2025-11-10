@@ -1,34 +1,110 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# URL Shortener - Frontend
 
-## Getting Started
+Aplicación web moderna para acortar URLs con soporte para usuarios registrados e invitados. Permite crear, gestionar y compartir enlaces cortos de forma rápida y sencilla.
 
-First, run the development server:
+## 🚀 Características
+
+- **Sistema de usuarios dual**: Usuarios registrados y sesiones de invitado
+- **URLs privadas**: Control de privacidad para enlaces registrados
+- **Gestión de enlaces**: Edición, eliminación y organización de URLs
+- **Límites inteligentes**: 5 URLs con expiración de 7 días para invitados, sin límites para usuarios registrados
+- **Migración de cuenta**: Convierte tu sesión de invitado en cuenta permanente
+- **Interfaz moderna**: Diseño responsivo con tema amarillo/ámbar
+
+## 🛠️ Stack Tecnológico
+
+- **Framework**: Next.js 16.0.1 (App Router)
+- **UI Library**: React 19.2.0
+- **Lenguaje**: TypeScript
+- **Estilos**: Tailwind CSS v4
+- **Componentes**: shadcn/ui
+- **Iconos**: lucide-react
+- **Backend**: FastAPI (http://localhost:8000)
+
+## 📋 Prerequisitos
+
+- Node.js 18.x o superior
+- npm, yarn, pnpm o bun
+- Backend de FastAPI corriendo en `http://localhost:8000`
+
+## 🚀 Instalación y Ejecución
+
+1. **Instalar dependencias**:
+
+```bash
+npm install
+```
+
+2. **Ejecutar servidor de desarrollo**:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+3. **Abrir en el navegador**:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Visita [http://localhost:3002](http://localhost:3002)
 
-## Learn More
+## 📁 Estructura del Proyecto
 
-To learn more about Next.js, take a look at the following resources:
+```
+src/
+├── app/                    # App Router de Next.js
+│   ├── page.tsx           # Página principal (landing/auth)
+│   ├── layout.tsx         # Layout raíz
+│   └── [shortCode]/       # Página de redirección
+├── components/            # Componentes UI reutilizables
+│   ├── ui/               # Componentes shadcn/ui
+│   └── CustomAlertDialog.tsx
+├── features/             # Módulos por funcionalidad
+│   ├── auth/            # Autenticación (Login, Register)
+│   └── dashboard/       # Dashboard de usuario
+├── hooks/               # Custom React hooks
+├── types/              # Definiciones TypeScript
+├── utils/              # Utilidades y helpers
+│   ├── api.ts         # Cliente API
+│   └── guestSession.ts # Gestión de sesiones invitado
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 🔑 Funcionalidades Principales
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Para Usuarios Invitados
+- Crear hasta 5 URLs cortas
+- URLs expiran en 7 días
+- No pueden crear URLs privadas
+- Migración a cuenta registrada
 
-## Deploy on Vercel
+### Para Usuarios Registrados
+- Crear hasta 100 URLs
+- URLs privadas (solo accesibles con login)
+- Edición y gestión completa
+- Persistencia permanente
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 🎨 Comandos Disponibles
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+# Desarrollo
+npm run dev
+
+# Build de producción
+npm run build
+
+# Ejecutar producción
+npm start
+
+# Linter
+npm run lint
+```
+
+## 🔗 Endpoints del Backend
+
+La aplicación se conecta a:
+- `http://localhost:8000/auth/*` - Autenticación
+- `http://localhost:8000/urls/*` - Gestión de URLs
+- `http://localhost:8000/{shortCode}` - Redirección
+
+## 📝 Notas
+
+- Las sesiones de invitado usan UUID almacenado en localStorage
+- Las cookies HTTP-only manejan la autenticación de usuarios registrados
+- El sistema implementa sliding sessions para mantener sesiones activas
