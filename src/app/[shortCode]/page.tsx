@@ -4,6 +4,7 @@ import { useEffect, useState, use } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { ShieldOff, XCircle } from 'lucide-react';
 import LoadingSpinner from '@/components/LoadingSpinner';
+import { useAuth } from '@/hooks/useAuth';
 
 export default function ShortCodePage({ params }: { params: Promise<{ shortCode: string }> }) {
     const router = useRouter();
@@ -11,12 +12,23 @@ export default function ShortCodePage({ params }: { params: Promise<{ shortCode:
     const [error, setError] = useState<'unauthorized' | 'not-found' | 'guest-forbidden' | null>(null);
     const [isLoading, setIsLoading] = useState(true);
 
+    // Use auth hook to check for existing session
+    const { user, loading: authLoading } = useAuth();
+
     // Unwrap the params Promise
     const { shortCode } = use(params);
 
     useEffect(() => {
+        // Wait for auth to finish loading
+        if (authLoading) return;
+
         // Check if we were redirected here with an error parameter
         const errorParam = searchParams.get('error');
+
+        if (!errorParam || user) {
+            router.replace('/');
+            return;
+        }
 
         if (errorParam === 'guest_forbidden' || errorParam === 'guest-forbidden') {
             setError('guest-forbidden');
@@ -28,9 +40,9 @@ export default function ShortCodePage({ params }: { params: Promise<{ shortCode:
 
         setIsLoading(false);
 
-    }, [searchParams]);
+    }, [searchParams, authLoading, user, router]);
 
-    if (isLoading) {
+    if (authLoading || isLoading) {
         return (
             <LoadingSpinner />
         );
