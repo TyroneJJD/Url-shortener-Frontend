@@ -33,8 +33,18 @@ function HomeContent() {
     // Si viene el parámetro showAuth=true, mostrar los formularios automáticamente
     if (showAuthParam === 'true') {
       setShowAuthForms(true);
+    } else {
+      // Si no hay parámetro showAuth, ocultar formularios
+      setShowAuthForms(false);
     }
   }, [searchParams]);
+
+  // Resetear formularios si el usuario se autentica
+  useEffect(() => {
+    if (user) {
+      setShowAuthForms(false);
+    }
+  }, [user]);
 
   const handleLoginSuccess = (userData: UserResponse, returnUrlFromLogin?: string) => {
     // Limpiar la bandera de logout al iniciar sesión exitosamente
@@ -44,7 +54,7 @@ function HomeContent() {
     const urlToRedirect = returnUrlFromLogin || returnUrl;
     if (urlToRedirect) {
       // Clear the return URL from browser URL (replace history to avoid back button issues)
-      window.history.replaceState({}, '', '/');
+      router.replace('/');
       // Redirect to the backend with the short code immediately
       window.location.href = `${API_BASE_URL_EXPORT}/${urlToRedirect}`;
       return; // Don't set user state, just redirect
